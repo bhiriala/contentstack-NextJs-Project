@@ -1,0 +1,69 @@
+{
+  "entry": {
+    "title": "Home Pageeee",
+        "url": "/",
+        "seo": {
+            "meta_title": "DevBlog - Accueil",
+            "meta_description": "Des articles techniques, tutoriels et astuces pour développeurs."
+        },
+        "page_components": [
+            {
+                "featured_article_section": {
+                    "article_ref": [
+                        {
+                            "uid": "blt1dc93e632b753ff9",
+                            "_content_type_uid": "blog_post"
+                        }
+                    ],
+                    
+                    "highlight_text": "This is the greatest article ever",
+                    "background_color": {
+                        "hsl": {
+                            "h": 206.86567164179107,
+                            "s": 0.2877110684719149,
+                            "l": 0.67876525,
+                            "a": 1
+                        },
+                        "hex": "#1a34f3",
+                        "rgb": {
+                            "r": 54,
+                            "g": 62,
+                            "b": 203,
+                            "a": 1
+                        },
+                        "hsv": {
+                            "h": 256.86567164179107,
+                            "s": 0.2849999999999999,
+                            "v": 0.7527,
+                            "a": 1
+                        },
+                        "oldHue": 206.86567164179107,
+                        "source": "hsv"
+                    }
+                }
+            },
+            {
+                "recent_articles_list": {
+                    "title": "Recent Articles",
+                    
+                    "show_author": true,
+                    "show_date": true,
+                    "categorie_filter": [
+                        {
+                            "uid": "bltda9a82b2a07d00ea",
+                            "_content_type_uid": "category"
+                        }
+                    ]
+                }
+            },
+            {
+                "category_list": {
+                    "title": "Category List",
+                    
+                    "view_type": "Grid",
+                    "cta_label": "Show categorizze"
+                }
+            }
+        ]
+  }
+}
