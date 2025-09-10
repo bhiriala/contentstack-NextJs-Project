@@ -26,6 +26,7 @@ export default function Home() {
   const getContent = async () => {
     const page = await getPage("/"); // Asynchronously fetching page data for the root URL
     setPage(page); // Updating the state with the fetched page data
+    console.log(page)
   };
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function Home() {
             className="text-4xl font-bold mb-4 text-center"
             {...(page?.$ && page?.$.title)} // Adding editable tags if available
           >
-            {page?.title} with Next{/* Rendering the page title */}
+            {page?.title}
           </h1>
         ) : null}
         {page?.description ? (
