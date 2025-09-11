@@ -43,6 +43,11 @@ export async function getPage(url: string) {
   const result = await stack
     .contentType("page")
     .entry()
+    .includeReference([
+      'page_components.featured_article_section.article_ref',
+      'page_components.featured_article_section.article_ref.author',
+      'page_components.featured_article_section.article_ref.category',
+    ])
     .query() 
     .where("url", QueryOperation.EQUALS, url) 
     .find<Page>(); 
@@ -56,3 +61,4 @@ export async function getPage(url: string) {
     return entry; 
   }
 }
+

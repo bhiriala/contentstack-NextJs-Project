@@ -45,29 +45,90 @@ export interface Taxonomy {
 }
 
 // Block object - Represents a modular block in Contentstack
-export interface Block {
-  _version?: number;
-  _metadata: any;
-  $: any;
-  title?: string;
-  copy?: string;
-  image?: File | null;
-  layout?: ("image_left" | "image_right") | null;
+
+
+
+type featured_articles = {
+  article_ref:BlogPost,
+  highlight_text: string,
+  background_color: string
+}
+type recent_articles = {
+  title: string,
+  show_author: boolean,
+  show_date: boolean,
+  categorie_filter:Category
+}
+type author_profile = {
+  show_article_list: boolean,
+  article_list_limit: number,  
+}
+type rich_text = {
+  body: string
+}
+type list_of_cards = {
+  section_title: string,
+  view_type: ("grid" | "list"),
+  cta_label: string,
 }
 
-export interface Blocks {
-  block: Block;
-}
 
-// Page object - Represents a page in Contentstack
+export type Pagecomponent = {
+  featured_article_section?: featured_articles,
+  recent_articles_list?: recent_articles,
+  author_profile?: author_profile,
+  rich_text_section?: rich_text,
+  list_of_cards?: list_of_cards,
+}
 export interface Page {
   uid: string;
   $: any;
   _version?: number;
   title: string;
   url?: string;
+  seo:Seo
+  page_components?: Pagecomponent[];
+
+}
+type ContactInfo = {
+  email: string;
+  phone: string;
+};
+export type Author = {
+  uid: string;
+  name: string;
+  bio?: string;
+  photo?: File | null;
+  contact:ContactInfo
+  $: any;   
+}
+type Seo = {
+  metaTitle: string;
+  metaDescription: string;
+  keywords?: string[];
+};
+export type Category = {
+  uid: string;
+  title: string;   
   description?: string;
   image?: File | null;
-  rich_text?: string;
-  blocks?: Blocks[];
+  $: any;
+}
+
+export type BlogPost = {
+  uid: string;
+  title: string; 
+  summary?: string;
+  content?: string;
+  author?: Author;
+  published_date?: string; 
+  categorie?: Category;
+  reading_time?: number;
+  image?: File | null;
+}
+
+export type RenderProps = {
+  contentTypeUid: string;
+  entryUid: string;
+  pageComponents:Pagecomponent[];
 }
