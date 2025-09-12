@@ -48,16 +48,17 @@ export interface Taxonomy {
 
 
 
-type featured_articles = {
-  article_ref:BlogPost,
+export type Featured_articles = {
+  article_ref:BlogPost[],
   highlight_text: string,
   background_color: string
 }
-type recent_articles = {
+export type Recent_articles = {
   title: string,
   show_author: boolean,
   show_date: boolean,
-  categorie_filter:Category
+  categorie_filter:[Category],
+  cta_label: string,
 }
 type author_profile = {
   show_article_list: boolean,
@@ -74,8 +75,8 @@ type list_of_cards = {
 
 
 export type Pagecomponent = {
-  featured_article_section?: featured_articles,
-  recent_articles_list?: recent_articles,
+  featured_article_section?: Featured_articles,
+  recent_articles_list?: Recent_articles,
   author_profile?: author_profile,
   rich_text_section?: rich_text,
   list_of_cards?: list_of_cards,

@@ -1,6 +1,6 @@
-import contentstack, { QueryOperation } from "@contentstack/delivery-sdk";
+import contentstack, { QueryOperation,Entry  } from "@contentstack/delivery-sdk";
 import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-utils";
-import { Page } from "./types";
+import { Page,BlogPost } from "./types";
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
 
 const region = getRegionForString(process.env.NEXT_PUBLIC_CONTENTSTACK_REGION as string)
@@ -47,6 +47,7 @@ export async function getPage(url: string) {
       'page_components.featured_article_section.article_ref',
       'page_components.featured_article_section.article_ref.author',
       'page_components.featured_article_section.article_ref.category',
+      'page_components.recent_articles_list.categorie_filter',
     ])
     .query() 
     .where("url", QueryOperation.EQUALS, url) 
@@ -60,5 +61,38 @@ export async function getPage(url: string) {
     }
     return entry; 
   }
+}
+
+export async function getRecentBlogPosts(categoryUid?: string, limit: number = 3) {
+  console.log('Fetching recent blog posts with categoryUid:', categoryUid, 'and limit:', limit);
+
+  let query = stack
+    .contentType("blog_post")
+    .entry()
+    .includeReference(['author', 'category'])
+    .query();
+
+  if (categoryUid) {
+    query.where('category.uid',QueryOperation.EQUALS,categoryUid); 
+  }
+
+  query.orderByDescending('published_date').limit(limit);
+
+  const result = await query.find();
+  const entries = result?.entries as BlogPost[];
+
+  console.log('Recent blog posts result:', entries);
+  console.log('Category UID filter:', categoryUid);
+
+  if (entries?.length > 0) {
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      entries.forEach((entry: BlogPost) => {
+        contentstack.Utils.addEditableTags(entry, 'blog_post', true);
+      });
+    }
+    return entries;
+  }
+
+  return [];
 }
 
