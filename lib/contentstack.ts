@@ -1,6 +1,6 @@
 import contentstack, { QueryOperation,Entry  } from "@contentstack/delivery-sdk";
 import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-utils";
-import { Page,BlogPost,Category,Header,Footer } from "./types";
+import { Page,BlogPost,Category,Header,Footer,Author } from "./types";
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
 
 const region = getRegionForString(process.env.NEXT_PUBLIC_CONTENTSTACK_REGION as string)
@@ -150,4 +150,82 @@ export async function getFooter() {
     }
     return entry;
   }
+}
+
+export async function getAuthor(slug: string) {
+  const result = await stack
+    .contentType("author")
+    .entry()
+    .query()
+    .where("title", QueryOperation.EQUALS, slug)
+    .find<Author>();
+
+  if (result.entries) {
+    const entry = result.entries[0];
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      contentstack.Utils.addEditableTags(entry, 'author', true);
+    }
+    return entry;
+  }
+}
+
+export async function getAuthorPage(url: string) {
+  const result = await stack
+    .contentType("page")
+    .entry()
+    .includeReference([
+      'page_components.author_profile',
+      'page_components.list_of_cards',
+    ])
+    .query()
+    .where("url", QueryOperation.EQUALS, url)
+    .find<Page>();
+
+  if (result.entries) {
+    const entry = result.entries[0];
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      contentstack.Utils.addEditableTags(entry, 'page', true);
+    }
+    return entry;
+  }
+}
+
+export async function getAuthorArticles(authorUid: string, limit: number = 10) {
+  const result = await stack
+    .contentType("blog_post")
+    .entry()
+    .includeReference(['author', 'category'])
+    .query()
+    .where("author.uid", QueryOperation.EQUALS, authorUid)
+    .orderByDescending("created_at")
+    .limit(limit)
+    .find<BlogPost>();
+
+  if (result.entries) {
+    const entries = result.entries;
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      entries.forEach(entry => {
+        contentstack.Utils.addEditableTags(entry, 'blog_post', true);
+      });
+    }
+    return entries;
+  }
+
+  return [];
+}
+export async function getAllAuthorSlugs() {
+  const result = await stack
+    .contentType("author")
+    .entry()
+    .query()
+    .find<Author>();
+
+  if (result.entries) {
+    return result.entries.map((entry: Author) => entry.title);
+  }
+
+  return [];
 }

@@ -31,10 +31,11 @@ export default function RenderComponents(props: RenderProps) {
                     );
                 } 
                 if (component.list_of_cards) {
+                    const block = component.list_of_cards;
                     return (
-                        <ListOfCards 
-                            categorieListProps={component.list_of_cards} 
-                            key={`list-cards-${key}`} 
+                        <ListOfCards
+                        categorieListProps={block}
+                        key={`list-cards-${key}`}
                         />
                     );
                 }

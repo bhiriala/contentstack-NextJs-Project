@@ -44,9 +44,10 @@ export interface Taxonomy {
   non_localizable: boolean;
 }
 
-// Block object - Represents a modular block in Contentstack
-
-
+type author_profile = {
+  show_article_list: boolean,
+  article_list_limit: number,  
+}
 
 export type Featured_articles = {
   article_ref:BlogPost[],
@@ -60,10 +61,7 @@ export type Recent_articles = {
   categorie_filter:[Category],
   cta_label: string,
 }
-type author_profile = {
-  show_article_list: boolean,
-  article_list_limit: number,  
-}
+
 type rich_text = {
   body: string
 }
@@ -158,6 +156,7 @@ export type BlogPost = {
   publish_details?: {
     time: string;
   };
+  $: any;
 }
 
 export type RenderProps = {

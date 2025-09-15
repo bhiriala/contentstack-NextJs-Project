@@ -14,7 +14,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Récupération du header et footer depuis ContentStack
   const [header, footer] = await Promise.all([
     getHeader(),
     getFooter()
