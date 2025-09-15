@@ -12,10 +12,10 @@ export default function RecentArticleCard({
   showAuthor = true, 
   showDate = true 
 }: RecentArticleCardProps) {
+  console.log('articleee :',article)
   
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      {/* Image de l'article */}
       {article.image && (
         <div className="relative h-48 overflow-hidden">
           <img
@@ -25,10 +25,7 @@ export default function RecentArticleCard({
           />
         </div>
       )}
-      
-      {/* Contenu de la card */}
       <div className="p-6">
-        {/* Catégorie */}
         {article.categorie && (
           <div className="mb-2">
             <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
@@ -36,20 +33,14 @@ export default function RecentArticleCard({
             </span>
           </div>
         )}
-        
-        {/* Titre de l'article */}
         <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors duration-200">
           {article.title}
         </h3>
-        
-        {/* Résumé */}
         {article.summary && (
           <p className="text-gray-600 text-sm mb-4 line-clamp-2">
             {article.summary}
           </p>
         )}
-        
-        {/* Métadonnées */}
         <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
           <div className="flex items-center space-x-4">
             {showAuthor && article.author && (
@@ -57,7 +48,7 @@ export default function RecentArticleCard({
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
                 </svg>
-                {article.author.name}
+                {article.author[0].title}
               </span>
             )}
             
@@ -81,7 +72,6 @@ export default function RecentArticleCard({
           )}
         </div>
         
-        {/* Bouton Read More */}
         <button
           className="w-full text-blue-600 hover:text-blue-800 font-medium text-sm py-2 flex items-center justify-center group transition-colors duration-200"
           onClick={() => {

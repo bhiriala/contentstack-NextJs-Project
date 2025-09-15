@@ -33,7 +33,7 @@ export default function RenderComponents(props: RenderProps) {
                 if (component.list_of_cards) {
                     return (
                         <ListOfCards 
-                            categorieList={component.list_of_cards} 
+                            categorieListProps={component.list_of_cards} 
                             key={`list-cards-${key}`} 
                         />
                     );

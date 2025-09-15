@@ -1,6 +1,6 @@
 import contentstack, { QueryOperation,Entry  } from "@contentstack/delivery-sdk";
 import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-utils";
-import { Page,BlogPost } from "./types";
+import { Page,BlogPost,Category,Header,Footer } from "./types";
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
 
 const region = getRegionForString(process.env.NEXT_PUBLIC_CONTENTSTACK_REGION as string)
@@ -96,3 +96,58 @@ export async function getRecentBlogPosts(categoryUid?: string, limit: number = 3
   return [];
 }
 
+
+export async function getCategories() {
+  let result = await stack
+  .contentType("category")
+  .entry()
+  .find<Category>()
+
+  const entries = result?.entries as Category[];
+  if (entries?.length > 0) {
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      entries.forEach((entry: Category) => {
+        contentstack.Utils.addEditableTags(entry, 'category', true);
+      });
+    }
+    return entries;
+  }
+
+
+  return [];
+}
+
+
+export async function getHeader() {
+  const result = await stack
+    .contentType("header")
+    .entry()
+    .query()
+    .find<Header>();
+
+  if (result.entries) {
+    const entry = result.entries[0];
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      contentstack.Utils.addEditableTags(entry, 'header', true);
+    }
+    return entry;
+  }
+}
+
+export async function getFooter() {
+  const result = await stack
+    .contentType("footer")
+    .entry()
+    .query()
+    .find<Footer>();
+
+  if (result.entries) {
+    const entry = result.entries[0];
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      contentstack.Utils.addEditableTags(entry, 'footer', true);
+    }
+    return entry;
+  }
+}

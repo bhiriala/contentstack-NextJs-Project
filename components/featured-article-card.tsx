@@ -1,22 +1,12 @@
 import React from 'react';
+import { BlogPost } from '@/lib/types';
 
 interface FeaturedArticleCardProps {
-  article: {
-    uid: string;
-    title: string;
-    summary?: string;
-    image?: {
-      url: string;
-      title?: string;
-    };
-    author?: any;
-    publish_details?: {
-      time: string;
-    };
-  };
+  article: BlogPost
 }
 
 export default function FeaturedArticleCard({ article }: FeaturedArticleCardProps) {
+  console.log("hahahahahahah article : ",article)
   return (
     <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-md w-full transform hover:scale-105 transition-transform duration-300">
 
@@ -42,6 +32,7 @@ export default function FeaturedArticleCard({ article }: FeaturedArticleCardProp
         )}
         
         <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+          <div className="flex items-center space-x-4">
           {article.author && (
             <span className="flex items-center">
               <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -50,13 +41,22 @@ export default function FeaturedArticleCard({ article }: FeaturedArticleCardProp
               {article.author[0]?.title || 'Auteur inconnu'}
             </span>
           )}
+          {article.reading_time && (
+              <span className="flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" clipRule="evenodd" />
+                </svg>
+                {article.reading_time} min
+              </span>
+            )}
+            </div>
           
-          {article.publish_details?.time && (
+          {article.published_date && (
             <span className="flex items-center">
               <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
-              {new Date(article.publish_details.time).toLocaleDateString('fr-FR')}
+              {new Date(article.published_date).toLocaleDateString('fr-FR')}
             </span>
           )}
         </div>

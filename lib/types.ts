@@ -67,10 +67,39 @@ type author_profile = {
 type rich_text = {
   body: string
 }
-type list_of_cards = {
+export type List_of_cards = {
   section_title: string,
   view_type: ("grid" | "list"),
   cta_label: string,
+}
+
+export type NavigationItem = {
+  nav_item_title: string;
+  nav_item_url: string;
+  $: any;
+}
+
+export type Header = {
+  uid: string;
+  title: string;
+  logo?: File | null;
+  navigation: NavigationItem[];
+  $: any;
+}
+
+export type SocialLink = {
+  icon?: File | null;
+  url: string;
+  $: any;
+}
+
+export type Footer = {
+  uid: string;
+  title: string;
+  site_description: string;
+  links: NavigationItem[];
+  social_links: SocialLink[];
+  $: any;
 }
 
 
@@ -79,7 +108,7 @@ export type Pagecomponent = {
   recent_articles_list?: Recent_articles,
   author_profile?: author_profile,
   rich_text_section?: rich_text,
-  list_of_cards?: list_of_cards,
+  list_of_cards?: List_of_cards,
 }
 export interface Page {
   uid: string;
@@ -97,7 +126,7 @@ type ContactInfo = {
 };
 export type Author = {
   uid: string;
-  name: string;
+  title: string;
   bio?: string;
   photo?: File | null;
   contact:ContactInfo
@@ -121,11 +150,14 @@ export type BlogPost = {
   title: string; 
   summary?: string;
   content?: string;
-  author?: Author;
+  author?: [Author];
   published_date?: string; 
   categorie?: Category;
   reading_time?: number;
   image?: File | null;
+  publish_details?: {
+    time: string;
+  };
 }
 
 export type RenderProps = {
