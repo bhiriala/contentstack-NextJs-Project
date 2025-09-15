@@ -3,6 +3,31 @@ import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-u
 import { Page,BlogPost,Category,Header,Footer,Author } from "./types";
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
 
+function nameToSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[àáâãäå]/g, 'a')
+    .replace(/[èéêë]/g, 'e')
+    .replace(/[ìíîï]/g, 'i')
+    .replace(/[òóôõö]/g, 'o')
+    .replace(/[ùúûü]/g, 'u')
+    .replace(/[ýÿ]/g, 'y')
+    .replace(/[ñ]/g, 'n')
+    .replace(/[ç]/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '') // Enlever caractères spéciaux
+    .replace(/\s+/g, '-') // Remplacer espaces par tirets
+    .replace(/-+/g, '-') // Éviter tirets multiples
+    .replace(/^-|-$/g, ''); // Enlever tirets au début/fin
+}
+
+function slugToName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 const region = getRegionForString(process.env.NEXT_PUBLIC_CONTENTSTACK_REGION as string)
 const endpoints = getContentstackEndpoints(region, true)
 
@@ -153,11 +178,14 @@ export async function getFooter() {
 }
 
 export async function getAuthor(slug: string) {
+  // Convertir le slug vers le nom pour la recherche
+  const searchName = slugToName(slug);
+  
   const result = await stack
     .contentType("author")
     .entry()
     .query()
-    .where("title", QueryOperation.EQUALS, slug)
+    .where("name", QueryOperation.EQUALS, searchName)
     .find<Author>();
 
   if (result.entries) {
@@ -224,7 +252,35 @@ export async function getAllAuthorSlugs() {
     .find<Author>();
 
   if (result.entries) {
-    return result.entries.map((entry: Author) => entry.title);
+    return result.entries.map((entry: Author) => nameToSlug(entry.title));
+  }
+
+  return [];
+}
+
+export async function getBlogPosts(limit?: number) {
+  let query = stack
+    .contentType("blog_post")
+    .entry()
+    .includeReference(['author', 'category'])
+    .query()
+    .orderByDescending("created_at");
+
+  if (limit) {
+    query = query.limit(limit);
+  }
+
+  const result = await query.find<BlogPost>();
+
+  if (result.entries) {
+    const entries = result.entries;
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      entries.forEach(entry => {
+        contentstack.Utils.addEditableTags(entry, 'blog_post', true);
+      });
+    }
+    return entries;
   }
 
   return [];

@@ -163,4 +163,5 @@ export type RenderProps = {
   contentTypeUid: string;
   entryUid: string;
   pageComponents:Pagecomponent[];
+  author?: Author;
 }

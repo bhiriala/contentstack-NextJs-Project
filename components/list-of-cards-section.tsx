@@ -1,47 +1,76 @@
+"use client"
 import React, { useEffect, useState } from 'react';
-import { Category } from "@/lib/types";
-import { getCategories } from "@/lib/contentstack";
-import CategoryCard from './category-card';
+import { List_of_cards } from '@/lib/types';
 
-interface List_of_cards {
-  section_title: string;
-  view_type: "grid" | "list";
-  cta_label: string;
+// Type générique pour n'importe quel item de carte
+export interface CardItem {
+  uid: string;
+  title: string;
+  description?: string;
+  image?: {
+    url: string;
+  } | null;
+  [key: string]: any; // Propriétés supplémentaires flexibles
 }
 
-interface CategorySectionProps {
-  categorieListProps: List_of_cards;
+// Props du composant de carte générique
+interface GenericCardProps {
+  item: CardItem;
+  viewType: "grid" | "list";
+  ctaLabel: string;
+  renderCard: (item: CardItem, viewType: "grid" | "list", ctaLabel: string) => React.ReactNode;
 }
 
-export default function ListOfCards({ categorieListProps }: CategorySectionProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
+// Props du composant principal
+interface ListOfCardsSectionProps {
+  listOfCardsProps: List_of_cards;
+  fetchItems: () => Promise<CardItem[]>; // Fonction pour récupérer les données
+  renderCard: (item: CardItem, viewType: "grid" | "list", ctaLabel: string) => React.ReactNode; // Fonction de rendu personnalisée
+  emptyStateConfig?: {
+    icon?: React.ReactNode;
+    title: string;
+    description: string;
+  };
+}
+
+// Composant de carte générique
+function GenericCard({ item, viewType, ctaLabel, renderCard }: GenericCardProps) {
+  return <>{renderCard(item, viewType, ctaLabel)}</>;
+}
+
+// Composant principal générique
+export default function ListOfCardsSection({ 
+  listOfCardsProps, 
+  fetchItems, 
+  renderCard,
+  emptyStateConfig 
+}: ListOfCardsSectionProps) {
+  const [items, setItems] = useState<CardItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { section_title, view_type, cta_label } = categorieListProps;
-
-  console.log("listOfcardsss : ", categorieListProps);
+  const { section_title, view_type, cta_label } = listOfCardsProps;
 
   useEffect(() => {
-    async function fetchCategories() {
+    async function loadItems() {
       try {
         setLoading(true);
         setError(null);
         
-        const fetchedCategories = await getCategories();
-        console.log('Fetched categories:', fetchedCategories);
+        const fetchedItems = await fetchItems();
+        console.log('Fetched items:', fetchedItems);
         
-        setCategories(fetchedCategories as Category[]);
+        setItems(fetchedItems);
       } catch (err) {
-        console.error('Erreur lors du chargement des catégories:', err);
-        setError('Erreur lors du chargement des catégories');
+        console.error('Erreur lors du chargement des données:', err);
+        setError('Erreur lors du chargement des données');
       } finally {
         setLoading(false);
       }
     }
 
-    fetchCategories();
-  }, []);
+    loadItems();
+  }, [fetchItems]);
 
   if (loading) {
     return (
@@ -49,12 +78,13 @@ export default function ListOfCards({ categorieListProps }: CategorySectionProps
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-2 text-gray-600">Chargement des catégories...</p>
+            <p className="mt-2 text-gray-600">Chargement...</p>
           </div>
         </div>
       </section>
     );
   }
+
   if (error) {
     return (
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
@@ -85,8 +115,20 @@ export default function ListOfCards({ categorieListProps }: CategorySectionProps
     if (view_type === "list") {
       return "space-y-4"; 
     }
-    return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12"; // Grille
+    return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12";
   };
+
+  const defaultEmptyState = {
+    icon: (
+      <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+      </svg>
+    ),
+    title: "Aucun contenu disponible",
+    description: "Le contenu sera affiché ici une fois qu'il sera créé dans ContentStack."
+  };
+
+  const emptyState = emptyStateConfig || defaultEmptyState;
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -115,30 +157,27 @@ export default function ListOfCards({ categorieListProps }: CategorySectionProps
               )}
             </span>
             <span>•</span>
-            <span>{categories.length} catégorie{categories.length > 1 ? 's' : ''}</span>
+            <span>{items.length} élément{items.length > 1 ? 's' : ''}</span>
           </div>
         </div>
 
-        {categories.length > 0 ? (
+        {items.length > 0 ? (
           <div className={getGridClasses()}>
-            {categories.map((category, index) => (
-              <CategoryCard
-                key={category.uid || index}
-                category={category}
+            {items.map((item, index) => (
+              <GenericCard
+                key={item.uid || index}
+                item={item}
                 viewType={view_type}
                 ctaLabel={cta_label}
+                renderCard={renderCard}
               />
             ))}
           </div>
         ) : (
           <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">Aucune catégorie disponible</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Les catégories seront affichées ici une fois qu'elles seront créées dans ContentStack.
-            </p>
+            {emptyState.icon}
+            <h3 className="mt-2 text-sm font-medium text-gray-900">{emptyState.title}</h3>
+            <p className="mt-1 text-sm text-gray-500">{emptyState.description}</p>
           </div>
         )}
       </div>
