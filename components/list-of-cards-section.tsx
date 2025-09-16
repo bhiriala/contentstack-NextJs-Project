@@ -58,9 +58,10 @@ export default function ListOfCardsSection({
         setError(null);
         
         const fetchedItems = await fetchItems();
-        console.log('Fetched items:', fetchedItems);
+        
         
         setItems(fetchedItems);
+        console.log('Fetched dddditems:', fetchedItems);
       } catch (err) {
         console.error('Erreur lors du chargement des données:', err);
         setError('Erreur lors du chargement des données');

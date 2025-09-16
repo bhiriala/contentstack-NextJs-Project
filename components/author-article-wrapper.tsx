@@ -3,7 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { List_of_cards, BlogPost, Author } from '@/lib/types';
 import { getAuthorArticles } from '../lib/contentstack';
-import ListOfCardsSection, { CardItem } from './list-of-cards-section';
 
 interface AuthorArticlesWrapperProps {
   listOfCardsProps: List_of_cards;
@@ -11,21 +10,15 @@ interface AuthorArticlesWrapperProps {
   limit?: number;
 }
 
-// Fonction pour adapter les articles d'un auteur au format CardItem
-const adaptAuthorArticlesToCardItems = (authorUid: string, limit: number) => async (): Promise<CardItem[]> => {
-  const articles = await getAuthorArticles(authorUid, limit);
-  return articles.map(article => ({
-    // Garder toutes les propriétés originales de BlogPost
-    ...article,
-    // Mapper les propriétés spécifiques pour CardItem (ces propriétés écraseront celles du spread)
-    description: article.summary, // Mapper summary vers description
-  }));
-};
-
-// Fonction de rendu pour les cartes d'articles d'auteur (sans afficher l'auteur)
-const renderAuthorArticleCard = (item: CardItem, viewType: "grid" | "list", ctaLabel: string) => {
-  const article = item as BlogPost;
-
+function AuthorArticleCard({ 
+  article, 
+  viewType, 
+  ctaLabel 
+}: { 
+  article: BlogPost; 
+  viewType: "grid" | "list"; 
+  ctaLabel: string; 
+}) {
   const formatDate = (dateString?: string) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -104,9 +97,8 @@ const renderAuthorArticleCard = (item: CardItem, viewType: "grid" | "list", ctaL
             src={article.image.url}
             alt={article.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
+
           
           {article.categorie && (
             <div className="absolute top-4 left-4">
@@ -164,29 +156,80 @@ const renderAuthorArticleCard = (item: CardItem, viewType: "grid" | "list", ctaL
       </div>
     </article>
   );
-};
+}
 
-export default function AuthorArticlesWrapper({ 
+// Composant principal - maintenant un composant serveur
+export default async function AuthorArticlesWrapper({ 
   listOfCardsProps, 
   author, 
   limit = 10 
 }: AuthorArticlesWrapperProps) {
-  const emptyStateConfig = {
-    icon: (
-      <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
-      </svg>
-    ),
-    title: "Aucun article publié",
-    description: `${author.title} n'a pas encore publié d'articles.`
+  // Récupération des données côté serveur
+  const articles = await getAuthorArticles(author.uid, limit);
+
+  const { section_title, view_type, cta_label } = listOfCardsProps;
+
+  const getGridClasses = () => {
+    if (view_type === "list") {
+      return "space-y-4"; 
+    }
+    return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12";
   };
 
   return (
-    <ListOfCardsSection
-      listOfCardsProps={listOfCardsProps}
-      fetchItems={adaptAuthorArticlesToCardItems(author.uid, limit)}
-      renderCard={renderAuthorArticleCard}
-      emptyStateConfig={emptyStateConfig}
-    />
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            {section_title}
+          </h2>
+          
+          <div className="flex justify-center items-center space-x-2 text-sm text-gray-500">
+            <span className="flex items-center">
+              {view_type === "grid" ? (
+                <>
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                  Vue en grille
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                  Vue en liste
+                </>
+              )}
+            </span>
+            <span>•</span>
+            <span>{articles.length} article{articles.length > 1 ? 's' : ''}</span>
+          </div>
+        </div>
+
+        {articles.length > 0 ? (
+          <div className={getGridClasses()}>
+            {articles.map((article, index) => (
+              <AuthorArticleCard
+                key={article.uid || index}
+                article={article}
+                viewType={view_type}
+                ctaLabel={cta_label}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun article publié</h3>
+            <p className="mt-1 text-sm text-gray-500">
+              {author.title} n'a pas encore publié d'articles.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }

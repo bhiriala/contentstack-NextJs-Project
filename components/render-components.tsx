@@ -10,6 +10,7 @@ import CategoryListWrapper from './category-list-wrapper';
 export default function RenderComponents(props: RenderProps) {
     const { pageComponents, entryUid, contentTypeUid, author } = props;
     console.log('page component overview:', pageComponents);
+    console.log('author in RenderComponents:', author);
     
     return (
         <div
@@ -17,7 +18,6 @@ export default function RenderComponents(props: RenderProps) {
             data-contenttype={contentTypeUid}
         >
             {pageComponents?.map((component, key: number) => {
-                // Profil d'auteur
                 if (component.author_profile && author) {
                     return (
                         <div key={`author-profile-section-${key}`}>
@@ -29,7 +29,6 @@ export default function RenderComponents(props: RenderProps) {
                     );
                 }
 
-                // Section d'articles en vedette
                 if (component.featured_article_section) {
                     return (
                         <FeaturedArticleSection 
@@ -39,7 +38,6 @@ export default function RenderComponents(props: RenderProps) {
                     );
                 } 
 
-                // Section des articles récents
                 if (component.recent_articles_list) {
                     return (
                         <RecentArticlesSection 
@@ -48,13 +46,11 @@ export default function RenderComponents(props: RenderProps) {
                         />
                     );
                 } 
-
-                // Liste de cartes générique
                 if (component.list_of_cards) {
                     const block = component.list_of_cards;
                     const sectionTitle = block.section_title.toLowerCase();
+                    console.log('Rendering list of cards for section:', sectionTitle);
                     
-                    // Si c'est une page d'auteur et que le titre suggère des articles d'auteur
                     if (author && (
                         sectionTitle.includes('articles') ||
                         sectionTitle.includes('publications') ||
@@ -65,13 +61,12 @@ export default function RenderComponents(props: RenderProps) {
                             <AuthorArticlesWrapper
                                 listOfCardsProps={block}
                                 author={author}
-                                limit={10} // Ou récupérer de la config
+                                limit={10} 
                                 key={`author-articles-${key}`}
                             />
                         );
                     }
                     
-                    // Si le titre contient "article" ou "blog", afficher les articles généraux
                     if (sectionTitle.includes('article') || 
                         sectionTitle.includes('blog') || 
                         sectionTitle.includes('publication')) {
@@ -83,7 +78,6 @@ export default function RenderComponents(props: RenderProps) {
                         );
                     }
                     
-                    // Sinon, afficher les catégories (comportement par défaut)
                     return (
                         <CategoryListWrapper
                             listOfCardsProps={block}

@@ -23,6 +23,7 @@ const adaptCategoriesToCardItems = async (): Promise<CardItem[]> => {
 // Fonction de rendu pour les cartes de catégories
 const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel: string) => {
   const category = item as Category;
+  console.log('Rendering category card:', category.image?.url, 'View type:', viewType);
 
   if (viewType === "list") {
     return (
@@ -30,7 +31,7 @@ const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel:
         {category.image && (
           <div className="relative w-16 h-16 flex-shrink-0 mr-4">
             <Image
-              src={category.image.url}
+              src={category.image?.url}
               alt={category.title}
               fill
               className="object-cover rounded-lg"
@@ -50,7 +51,7 @@ const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel:
             href={`/categories/${category.uid}`}
             className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200"
           >
-            {ctaLabel}
+            ahhahahahahahah
             <svg className="ml-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
             </svg>
@@ -66,12 +67,10 @@ const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel:
       {category.image && (
         <div className="relative h-48 w-full overflow-hidden">
           <Image
-            src={category.image.url}
+            src={category.image?.url}
             alt={category.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
         </div>
       )}
       

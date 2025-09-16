@@ -20,7 +20,6 @@ export default function AuthorProfileSection({
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-            {/* Photo de l'auteur */}
             {author.photo && (
               <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden shadow-lg flex-shrink-0">
                 <Image
@@ -32,8 +31,6 @@ export default function AuthorProfileSection({
                 />
               </div>
             )}
-
-            {/* Informations de l'auteur */}
             <div className="flex-1 text-center md:text-left">
               <h1 
                 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
@@ -43,15 +40,14 @@ export default function AuthorProfileSection({
               </h1>
 
               {author.bio && (
-                <p 
+                <div
                   className="text-lg text-gray-600 mb-6 leading-relaxed"
                   {...author.$?.bio}
-                >
-                  {author.bio}
-                </p>
+                  dangerouslySetInnerHTML={{ __html: author.bio }}
+                />
               )}
 
-              {/* Informations de contact */}
+
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-500">
                 {author.contact?.email && (
                   <div className="flex items-center space-x-2">
@@ -81,7 +77,6 @@ export default function AuthorProfileSection({
                 )}
               </div>
 
-              {/* Statistiques de l'auteur (optionnel) */}
               {authorProfileConfig?.show_article_list && (
                 <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center justify-center md:justify-start space-x-8 text-sm">
@@ -99,7 +94,6 @@ export default function AuthorProfileSection({
             </div>
           </div>
 
-          {/* Séparateur décoratif */}
           <div className="mt-8 pt-8 border-t border-gray-200">
             <div className="flex items-center justify-center">
               <div className="flex items-center space-x-2 text-gray-400">

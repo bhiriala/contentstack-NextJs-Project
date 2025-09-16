@@ -3,30 +3,6 @@ import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-u
 import { Page,BlogPost,Category,Header,Footer,Author } from "./types";
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
 
-function nameToSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[àáâãäå]/g, 'a')
-    .replace(/[èéêë]/g, 'e')
-    .replace(/[ìíîï]/g, 'i')
-    .replace(/[òóôõö]/g, 'o')
-    .replace(/[ùúûü]/g, 'u')
-    .replace(/[ýÿ]/g, 'y')
-    .replace(/[ñ]/g, 'n')
-    .replace(/[ç]/g, 'c')
-    .replace(/[^a-z0-9\s-]/g, '') // Enlever caractères spéciaux
-    .replace(/\s+/g, '-') // Remplacer espaces par tirets
-    .replace(/-+/g, '-') // Éviter tirets multiples
-    .replace(/^-|-$/g, ''); // Enlever tirets au début/fin
-}
-
-function slugToName(slug: string): string {
-  return slug
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
 
 const region = getRegionForString(process.env.NEXT_PUBLIC_CONTENTSTACK_REGION as string)
 const endpoints = getContentstackEndpoints(region, true)
@@ -89,7 +65,7 @@ export async function getPage(url: string) {
 }
 
 export async function getRecentBlogPosts(categoryUid?: string, limit: number = 3) {
-  console.log('Fetching recent blog posts with categoryUid:', categoryUid, 'and limit:', limit);
+  console.log('categoryuidd', categoryUid, 'and limit:', limit);
 
   let query = stack
     .contentType("blog_post")
@@ -176,20 +152,24 @@ export async function getFooter() {
     return entry;
   }
 }
+function slugToText(slug: string): string {
+  return slug.replace(/-/g, " ");
+}
 
 export async function getAuthor(slug: string) {
-  // Convertir le slug vers le nom pour la recherche
-  const searchName = slugToName(slug);
+  console.log("getAuthor slug: ", slug)
+  const searchName = slugToText(slug);
   
   const result = await stack
     .contentType("author")
     .entry()
     .query()
-    .where("name", QueryOperation.EQUALS, searchName)
+    .where("title", QueryOperation.EQUALS, searchName)
     .find<Author>();
 
   if (result.entries) {
     const entry = result.entries[0];
+    console.log("author entry: ", entry)
 
     if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
       contentstack.Utils.addEditableTags(entry, 'author', true);
@@ -240,19 +220,6 @@ export async function getAuthorArticles(authorUid: string, limit: number = 10) {
       });
     }
     return entries;
-  }
-
-  return [];
-}
-export async function getAllAuthorSlugs() {
-  const result = await stack
-    .contentType("author")
-    .entry()
-    .query()
-    .find<Author>();
-
-  if (result.entries) {
-    return result.entries.map((entry: Author) => nameToSlug(entry.title));
   }
 
   return [];

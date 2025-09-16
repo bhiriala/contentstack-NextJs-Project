@@ -11,7 +11,6 @@ interface HeaderProps {
 
 export default function Header({ header }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  console.log("heeeeaaderrr : ", header)
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
