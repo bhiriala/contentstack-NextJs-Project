@@ -63,6 +63,47 @@ export async function getPage(url: string) {
     return entry; 
   }
 }
+export async function getCategory(slug: string) {
+  const searchName = decodeString(slug);
+  const searchNameFinal = slugToText(searchName);
+  const result = await stack
+    .contentType("category")
+    .entry()
+    .query()
+    .where("title", QueryOperation.EQUALS, searchNameFinal)
+    .find<Category>();
+  if (result.entries) {
+    const entry = result.entries[0];    
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      contentstack.Utils.addEditableTags(entry, 'category', true);
+    }
+    return entry;
+  }
+}
+
+export async function getCategoryArticles(categoryUid: string) {
+  const result = await stack
+    .contentType("blog_post")
+    .entry()
+    .includeReference(['author', 'category'])
+    .query()
+    .where("category.uid", QueryOperation.EQUALS, categoryUid)
+    .orderByDescending("created_at")
+    .find<BlogPost>();
+
+  if (result.entries) {
+    const entries = result.entries;
+
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      entries.forEach(entry => {
+        contentstack.Utils.addEditableTags(entry, 'blog_post', true);
+      });
+    }
+    return entries;
+  }
+
+  return [];
+}
 
 export async function getRecentBlogPosts(categoryUid?: string, limit: number = 3) {
   console.log('categoryuidd', categoryUid, 'and limit:', limit);
@@ -155,16 +196,20 @@ export async function getFooter() {
 function slugToText(slug: string): string {
   return slug.replace(/-/g, " ");
 }
+function decodeString(str: string): string {
+  return decodeURIComponent(str);
+}
 
 export async function getAuthor(slug: string) {
   console.log("getAuthor slug: ", slug)
-  const searchName = slugToText(slug);
+  const searchName = decodeString(slug);
+  const searchNameFinal = slugToText(searchName);
   
   const result = await stack
     .contentType("author")
     .entry()
     .query()
-    .where("title", QueryOperation.EQUALS, searchName)
+    .where("title", QueryOperation.EQUALS, searchNameFinal)
     .find<Author>();
 
   if (result.entries) {
@@ -222,6 +267,47 @@ export async function getAuthorArticles(authorUid: string, limit: number = 10) {
     return entries;
   }
 
+  return [];
+}
+
+export async function getBlogPost(slug: string) {
+  const searchName = decodeString(slug);
+  const searchNameFinal = slugToText(searchName);
+  const result = await stack
+    .contentType("blog_post")
+    .entry()
+    .includeReference(['author', 'category'])
+    .query()
+    .where("title", QueryOperation.EQUALS, searchNameFinal)
+    .find<BlogPost>();
+  if (result.entries) {
+    const entry = result.entries[0];
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      contentstack.Utils.addEditableTags(entry, 'blog_post', true);
+    }
+    return entry;
+  }
+}
+
+export async function getSimilarBlogPosts(categoryUid: string, limit: number = 3) {
+  const result = await stack
+    .contentType("blog_post")
+    .entry()  
+    .includeReference(['author', 'category'])
+    .query()
+    .where("category.uid", QueryOperation.EQUALS, categoryUid) 
+    .orderByDescending("published_date") 
+    .limit(limit) 
+    .find<BlogPost>();
+  if (result.entries) {
+    const entries = result.entries;
+    if (process.env.NEXT_PUBLIC_CONTENTSTACK_PREVIEW === 'true') {
+      entries.forEach(entry => {
+        contentstack.Utils.addEditableTags(entry, 'blog_post', true);
+      });
+    }
+    return entries;
+  }
   return [];
 }
 

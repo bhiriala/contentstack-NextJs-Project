@@ -29,6 +29,7 @@ function AuthorArticleCard({
   };
 
   if (viewType === "list") {
+    console.log("article in list view: ", article);
     return (
       <div className="flex items-start p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
         {article.image && (
@@ -63,9 +64,9 @@ function AuthorArticleCard({
           
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4 text-sm text-gray-500">
-              {article.categorie && (
+              {article.category && (
                 <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">
-                  {article.categorie.title}
+                  {article.category[0].title}
                 </span>
               )}
               {article.reading_time && (
@@ -100,10 +101,10 @@ function AuthorArticleCard({
           />
 
           
-          {article.categorie && (
+          {article.category && (
             <div className="absolute top-4 left-4">
               <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                {article.categorie.title}
+                {article.category[0].title}
               </span>
             </div>
           )}
@@ -138,8 +139,8 @@ function AuthorArticleCard({
         
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            {article.categorie && (
-              <span className="text-sm text-gray-600">{article.categorie.title}</span>
+            {article.category && (
+              <span className="text-sm text-gray-600">{article.category[0].title}</span>
             )}
           </div>
           
@@ -166,6 +167,7 @@ export default async function AuthorArticlesWrapper({
 }: AuthorArticlesWrapperProps) {
   // Récupération des données côté serveur
   const articles = await getAuthorArticles(author.uid, limit);
+  console.log("articles by author: ", articles);
 
   const { section_title, view_type, cta_label } = listOfCardsProps;
 
@@ -210,6 +212,8 @@ export default async function AuthorArticlesWrapper({
         {articles.length > 0 ? (
           <div className={getGridClasses()}>
             {articles.map((article, index) => (
+              
+              
               <AuthorArticleCard
                 key={article.uid || index}
                 article={article}

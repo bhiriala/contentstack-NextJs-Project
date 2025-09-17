@@ -12,7 +12,7 @@ interface ArticleCardProps {
 export default function ArticleCard({ 
   article, 
   showAuthor = true, 
-  showDate = true 
+  showDate = true,
 }: ArticleCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -38,10 +38,10 @@ export default function ArticleCard({
 
       <div className="p-6">
         {/* Catégorie */}
-        {article.categorie && (
+        {article.category && (
           <div className="mb-3">
             <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-              {article.categorie.title}
+              {article.category[0].title}
             </span>
           </div>
         )}
@@ -74,7 +74,7 @@ export default function ArticleCard({
           <div className="flex items-center space-x-4">
             {/* Auteur */}
             {showAuthor && article.author && article.author[0] && (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-0.5">
                 {article.author[0].photo && (
                   <div className="relative w-6 h-6 rounded-full overflow-hidden">
                     <Image
@@ -96,7 +96,7 @@ export default function ArticleCard({
 
             {/* Date de publication */}
             {showDate && article.published_date && (
-              <time dateTime={article.published_date}>
+              <time  dateTime={article.published_date}>
                 {formatDate(article.published_date)}
               </time>
             )}
@@ -104,7 +104,7 @@ export default function ArticleCard({
 
           {/* Temps de lecture */}
           {article.reading_time && (
-            <span className="text-gray-400">
+            <span className="text-gray-400 ">
               {article.reading_time} min de lecture
             </span>
           )}

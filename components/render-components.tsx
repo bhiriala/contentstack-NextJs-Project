@@ -67,17 +67,6 @@ export default function RenderComponents(props: RenderProps) {
                         );
                     }
                     
-                    if (sectionTitle.includes('article') || 
-                        sectionTitle.includes('blog') || 
-                        sectionTitle.includes('publication')) {
-                        return (
-                            <ArticleListWrapper
-                                listOfCardsProps={block}
-                                key={`article-list-${key}`}
-                            />
-                        );
-                    }
-                    
                     return (
                         <CategoryListWrapper
                             listOfCardsProps={block}

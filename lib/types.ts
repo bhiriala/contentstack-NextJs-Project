@@ -118,6 +118,13 @@ export interface Page {
   page_components?: Pagecomponent[];
 
 }
+export type Category = {
+  uid: string;
+  title: string;   
+  description?: string;
+  image?: File | null;
+  $: any;
+}
 type ContactInfo = {
   email: string;
   phone: string;
@@ -135,13 +142,7 @@ type Seo = {
   metaDescription: string;
   keywords?: string[];
 };
-export type Category = {
-  uid: string;
-  title: string;   
-  description?: string;
-  image?: File | null;
-  $: any;
-}
+
 
 export type BlogPost = {
   uid: string;
@@ -150,7 +151,7 @@ export type BlogPost = {
   content?: string;
   author?: [Author];
   published_date?: string; 
-  categorie?: Category;
+  category?: [Category];
   reading_time?: number;
   image?: File | null;
   publish_details?: {
