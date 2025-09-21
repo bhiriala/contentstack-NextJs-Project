@@ -110,7 +110,7 @@ export default function Footer({ footer }: FooterProps) {
                 href="/terms-of-service" 
                 className="text-gray-400 hover:text-white text-sm transition-colors duration-200"
               >
-                Conditions d'utilisation
+                Conditions d utilisation
               </Link>
             </div>
           </div>

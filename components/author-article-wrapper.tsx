@@ -229,7 +229,7 @@ export default async function AuthorArticlesWrapper({
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun article publié</h3>
             <p className="mt-1 text-sm text-gray-500">
-              {author.title} n'a pas encore publié d'articles.
+              {author.title} n a pas encore publié d articles.
             </p>
           </div>
         )}

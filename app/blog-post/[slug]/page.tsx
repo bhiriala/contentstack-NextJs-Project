@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, useCallback } from "react";
 import { initLivePreview, getBlogPost, getSimilarBlogPosts } from "@/lib/contentstack"; 
 import { type BlogPost } from "@/lib/types";
 import ContentstackLivePreview, {
@@ -23,7 +23,7 @@ export default function Article({ params }: ArticleProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getContent = async () => {
+  const getContent = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -43,7 +43,7 @@ export default function Article({ params }: ArticleProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [resolvedParams.slug]);
 
   useEffect(() => {
     const initializeContent = async () => {
@@ -57,7 +57,7 @@ export default function Article({ params }: ArticleProps) {
     return () => {
       ContentstackLivePreview.onEntryChange(() => {});
     };
-  }, [resolvedParams.slug]);
+  }, [getContent]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', {
@@ -95,7 +95,7 @@ export default function Article({ params }: ArticleProps) {
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="text-gray-800 text-lg font-semibold mb-2">Article non trouvé</div>
-          <p className="text-gray-600">L'article que vous recherchez n'existe pas.</p>
+          <p className="text-gray-600">L article que vous recherchez n existe pas.</p>
         </div>
       </div>
     );
@@ -113,6 +113,7 @@ export default function Article({ params }: ArticleProps) {
                 alt={article.image.title || article.title}
                 fill
                 priority
+                className="object-cover"
               />
             </div>
           )}
@@ -172,7 +173,6 @@ export default function Article({ params }: ArticleProps) {
               </div>
             )}
             
-            {/* Contenu de l'article */}
             <div className="bg-white rounded-xl shadow-lg p-8 md:p-12 mb-12">
               <div 
                 className="prose prose-lg max-w-none prose-headings:text-gray-800 prose-p:text-gray-600 prose-a:text-blue-600 prose-strong:text-gray-800"
@@ -207,15 +207,13 @@ export default function Article({ params }: ArticleProps) {
               {similarArticles.length > 6 && (
                 <div className="text-center mt-12">
                   <button className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                    Voir plus d'articles
+                    Voir plus d articles
                   </button>
                 </div>
               )}
             </div>
           </div>
         )}
-
-    
       </div>
     </div>
   );

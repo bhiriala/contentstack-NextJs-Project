@@ -2,7 +2,6 @@ import React from 'react';
 import { RenderProps } from '../lib/types';
 import FeaturedArticleSection from './featured-article-section';
 import RecentArticlesSection from './recent-articles-section';
-import ArticleListWrapper from './article-list-wrapper';
 import AuthorProfileSection from './author-profile-section';
 import AuthorArticlesWrapper from './author-article-wrapper';
 import CategoryListWrapper from './category-list-wrapper';

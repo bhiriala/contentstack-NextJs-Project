@@ -1,4 +1,4 @@
-import contentstack, { QueryOperation,Entry  } from "@contentstack/delivery-sdk";
+import contentstack, { QueryOperation  } from "@contentstack/delivery-sdk";
 import ContentstackLivePreview, { IStackSdk } from "@contentstack/live-preview-utils";
 import { Page,BlogPost,Category,Header,Footer,Author } from "./types";
 import { getContentstackEndpoints, getRegionForString } from "@timbenniks/contentstack-endpoints";
@@ -108,7 +108,7 @@ export async function getCategoryArticles(categoryUid: string) {
 export async function getRecentBlogPosts(categoryUid?: string, limit: number = 3) {
   console.log('categoryuidd', categoryUid, 'and limit:', limit);
 
-  let query = stack
+  const query = stack
     .contentType("blog_post")
     .entry()
     .includeReference(['author', 'category'])
@@ -140,10 +140,10 @@ export async function getRecentBlogPosts(categoryUid?: string, limit: number = 3
 
 
 export async function getCategories() {
-  let result = await stack
-  .contentType("category")
-  .entry()
-  .find<Category>()
+  const result = await stack
+    .contentType("category")
+    .entry()
+    .find<Category>()
 
   const entries = result?.entries as Category[];
   if (entries?.length > 0) {
@@ -154,7 +154,6 @@ export async function getCategories() {
     }
     return entries;
   }
-
 
   return [];
 }

@@ -3,9 +3,7 @@
 import { getPage, initLivePreview } from "@/lib/contentstack"; 
 import { useEffect, useState } from "react"; 
 import { Page } from "@/lib/types";
-import ContentstackLivePreview, {
-  VB_EmptyBlockParentClass,
-} from "@contentstack/live-preview-utils";
+import ContentstackLivePreview from "@contentstack/live-preview-utils";
 import RenderComponents from "@/components/render-components";
 
 

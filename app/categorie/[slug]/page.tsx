@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useState, useCallback } from "react";
 import { initLivePreview, getCategory, getCategoryArticles } from "@/lib/contentstack"; 
 import { type Category, type BlogPost } from "@/lib/types";
 import ContentstackLivePreview, {
@@ -22,7 +22,7 @@ export default function Categorie({ params }: CategoryProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const getContent = async () => {
+  const getContent = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -42,7 +42,7 @@ export default function Categorie({ params }: CategoryProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [resolvedParams.slug]);
 
   useEffect(() => {
     const initializeContent = async () => {
@@ -56,7 +56,7 @@ export default function Categorie({ params }: CategoryProps) {
     return () => {
       ContentstackLivePreview.onEntryChange(() => {});
     };
-  }, [resolvedParams.slug]);
+  }, [getContent]);
 
   if (loading) {
     return (

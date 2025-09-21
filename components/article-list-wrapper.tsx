@@ -116,10 +116,10 @@ const renderArticleCard = (item: CardItem, viewType: "grid" | "list", ctaLabel: 
           />
           <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all duration-300"></div>
           
-          {article.categorie && (
+          {article.category && (
             <div className="absolute top-4 left-4">
               <span className="inline-block bg-blue-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                {article.categorie.title}
+                {article.category[0].title}
               </span>
             </div>
           )}

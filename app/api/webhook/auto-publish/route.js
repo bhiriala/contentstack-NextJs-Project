@@ -100,7 +100,7 @@ export async function POST(request) {
         });
       }
 
-      console.log(`Récupération des détails de l'entrée: ${entryUid} (${contentTypeUid})`);
+      console.log(`Récupération des détails de l entrée: ${entryUid} (${contentTypeUid})`);
 
       try {
         const entryDetails = await getEntryDetails(contentTypeUid, entryUid);

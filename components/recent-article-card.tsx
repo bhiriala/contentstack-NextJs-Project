@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlogPost } from '@/lib/types';
+import Image from 'next/image';
 
 interface RecentArticleCardProps {
   article: BlogPost;
@@ -18,7 +19,7 @@ export default function RecentArticleCard({
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {article.image && (
         <div className="relative h-48 overflow-hidden">
-          <img
+          <Image
             src={article.image.url}
             alt={article.image.title || article.title || 'Article image'}
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
@@ -26,10 +27,10 @@ export default function RecentArticleCard({
         </div>
       )}
       <div className="p-6">
-        {article.categorie && (
+        {article.category && (
           <div className="mb-2">
             <span className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-medium">
-              {article.categorie.title}
+              {article.category[0].title}
             </span>
           </div>
         )}

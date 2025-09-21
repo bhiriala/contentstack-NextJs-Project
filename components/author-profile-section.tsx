@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Author } from '@/lib/types';
 
 interface AuthorProfileSectionProps {
@@ -85,7 +84,7 @@ export default function AuthorProfileSection({
                       <div className="text-gray-600">Voir ci-dessous</div>
                     </div>
                     <div className="text-center md:text-left">
-                      <div className="font-semibold text-gray-900">Limite d'affichage</div>
+                      <div className="font-semibold text-gray-900">Limite d affichage</div>
                       <div className="text-gray-600">{authorProfileConfig.article_list_limit} articles</div>
                     </div>
                   </div>

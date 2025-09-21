@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { getRecentBlogPosts } from '@/lib/contentstack';
 import { BlogPost,Recent_articles } from '@/lib/types';
 import RecentArticleCard from './recent-article-card';
@@ -13,16 +13,20 @@ export default function RecentArticlesSection({ recentArticlesList }: RecentArti
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { title, show_author, show_date, categorie_filter, cta_label } = recentArticlesList;
+  const { title, show_author, show_date, categorie_filter } = recentArticlesList;
   console.log('RecentArticlesSection props:', recentArticlesList);
   console.log('Categorie filter:', categorie_filter);
+
+  // Extraire l'UID de la catégorie dans une variable séparée
+  const categoryUid = useMemo(() => {
+    return categorie_filter?.[0]?.uid;
+  }, [categorie_filter]);
 
   useEffect(() => {
     async function fetchRecentArticles() {
       try {
         setLoading(true);
         setError(null);
-        const categoryUid = categorie_filter?.[0]?.uid;
         const recentArticles = await getRecentBlogPosts(categoryUid, 3);
         console.log('Fetched recent articles:', recentArticles);
         
@@ -36,7 +40,7 @@ export default function RecentArticlesSection({ recentArticlesList }: RecentArti
     }
 
     fetchRecentArticles();
-  }, [categorie_filter?.[0]?.uid]);
+  }, [categoryUid]);
 
   // États de chargement et d'erreur
   if (loading) {

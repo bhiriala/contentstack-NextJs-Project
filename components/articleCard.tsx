@@ -24,7 +24,6 @@ export default function ArticleCard({
 
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      {/* Image de l'article */}
       {article.image && (
         <div className="relative w-full h-48">
           <Image

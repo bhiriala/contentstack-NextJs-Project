@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlogPost } from '@/lib/types';
+import Image from 'next/image';
 
 interface FeaturedArticleCardProps {
   article: BlogPost
@@ -12,7 +13,7 @@ export default function FeaturedArticleCard({ article }: FeaturedArticleCardProp
 
       {article.image && (
         <div className="relative h-48 overflow-hidden">
-          <img
+          <Image
             src={article.image.url}
             alt={article.image.title || article.title || 'Article image'}
             className="w-full h-full object-cover"
@@ -67,7 +68,7 @@ export default function FeaturedArticleCard({ article }: FeaturedArticleCardProp
             console.log('Navigating to article:', article.uid);
           }}
         >
-          Lire l'article
+          Lire l article
           <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>

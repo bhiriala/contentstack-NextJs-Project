@@ -7,23 +7,23 @@ import {
 import RenderComponents from '@/components/render-components';
 
 interface AuthorPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
-
 export default async function AuthorPage({ params }: AuthorPageProps) {  
+  const { slug } = await params;
 
   if (typeof window !== 'undefined') {
     initLivePreview();
   }
-  console.log("params.slussg: ", params.slug)
+  console.log("params.slug: ", slug)
   
-    const [author, authorPage] = await Promise.all([
-      getAuthor(params.slug),
-      getAuthorPage('/auteur') 
-    ]);
+  const [author, authorPage] = await Promise.all([
+    getAuthor(slug),
+    getAuthorPage('/auteur') 
+  ]);
 
   if (!author) {
     notFound();
@@ -40,7 +40,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
       list_of_cards: {
         section_title: `Articles de ${author.title}`,
         view_type: "grid" as const,
-        cta_label: "Lire l'article"
+        cta_label: "Lire l article"
       }
     }
   ];
