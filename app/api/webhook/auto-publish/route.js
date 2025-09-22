@@ -75,10 +75,6 @@ export async function POST(request) {
 
     const event = webhookData.data.workflow.type;
     console.log('Événement détecté:', event);
-
-    // Vérifier si c'est un événement de workflow
-    // Les événements workflow suivent ce pattern : content_types.{content_type}.entries.workflows.{workflow_uid}.{stage_uid}
-    // ou content_types.entries.workflows.{workflow_uid}
     if (event && event.includes('workflow')) {
       console.log('Événement de workflow détecté');
       

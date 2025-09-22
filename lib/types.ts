@@ -73,7 +73,10 @@ export type List_of_cards = {
 
 export type NavigationItem = {
   nav_item_title: string;
-  nav_item_url: string;
+  nav_item_url: {
+    title: string;
+    href: string;
+  };
   $: any;
 }
 

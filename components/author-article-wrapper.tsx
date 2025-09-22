@@ -1,4 +1,6 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { List_of_cards, BlogPost, Author } from '@/lib/types';
@@ -45,7 +47,7 @@ function AuthorArticleCard({
         <div className="flex-1">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-xl font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-200">
-              <Link href={`/blog/${article.uid}`}>
+              <Link href={`/blog-post/${article.title}`}>
                 {article.title}
               </Link>
             </h3>
@@ -75,7 +77,7 @@ function AuthorArticleCard({
             </div>
             
             <Link
-              href={`/blog/${article.uid}`}
+              href={`/blog-post/${article.title}`}
               className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200"
             >
               {ctaLabel}
@@ -89,7 +91,6 @@ function AuthorArticleCard({
     );
   }
 
-  // Vue en grille
   return (
     <article className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
       {article.image && (
@@ -98,8 +99,8 @@ function AuthorArticleCard({
             src={article.image.url}
             alt={article.title}
             fill
+            className="object-cover"
           />
-
           
           {article.category && (
             <div className="absolute top-4 left-4">
@@ -126,7 +127,7 @@ function AuthorArticleCard({
         </div>
         
         <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2">
-          <Link href={`/blog/${article.uid}`}>
+          <Link href={`/blog-post/${article.title}`}>
             {article.title}
           </Link>
         </h3>
@@ -145,7 +146,7 @@ function AuthorArticleCard({
           </div>
           
           <Link
-            href={`/blog/${article.uid}`}
+            href={`/blog-post/${article.title}`}
             className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 group-hover:shadow-md text-sm"
           >
             {ctaLabel}
@@ -159,15 +160,33 @@ function AuthorArticleCard({
   );
 }
 
-// Composant principal - maintenant un composant serveur
-export default async function AuthorArticlesWrapper({ 
+export default function AuthorArticlesWrapper({ 
   listOfCardsProps, 
   author, 
   limit = 10 
 }: AuthorArticlesWrapperProps) {
-  // Récupération des données côté serveur
-  const articles = await getAuthorArticles(author.uid, limit);
-  console.log("articles by author: ", articles);
+  const [articles, setArticles] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const fetchedArticles = await getAuthorArticles(author.uid, limit);
+        console.log("articles by author: ", fetchedArticles);
+        setArticles(fetchedArticles);
+      } catch (err) {
+        console.error("Error fetching author articles:", err);
+        setError("Failed to load articles");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, [author.uid, limit]);
 
   const { section_title, view_type, cta_label } = listOfCardsProps;
 
@@ -177,6 +196,45 @@ export default async function AuthorArticlesWrapper({
     }
     return "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12";
   };
+
+  if (loading) {
+    return (
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {section_title}
+            </h2>
+          </div>
+          <div className="flex justify-center items-center py-12">
+            <div className="flex items-center space-x-2">
+              <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse"></div>
+              <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse delay-75"></div>
+              <div className="w-4 h-4 bg-blue-500 rounded-full animate-pulse delay-150"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              {section_title}
+            </h2>
+          </div>
+          <div className="text-center py-12">
+            <div className="text-red-500 text-lg font-semibold mb-2">Erreur</div>
+            <p className="text-gray-600">{error}</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
@@ -212,8 +270,6 @@ export default async function AuthorArticlesWrapper({
         {articles.length > 0 ? (
           <div className={getGridClasses()}>
             {articles.map((article, index) => (
-              
-              
               <AuthorArticleCard
                 key={article.uid || index}
                 article={article}

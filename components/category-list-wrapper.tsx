@@ -9,18 +9,13 @@ interface CategoryListWrapperProps {
   listOfCardsProps: List_of_cards;
 }
 
-// Fonction pour adapter les catégories au format CardItem
 const adaptCategoriesToCardItems = async (): Promise<CardItem[]> => {
   const categories = await getCategories();
   return categories.map(category => ({
-    // Garder toutes les propriétés originales de Category
     ...category,
-    // Les propriétés uid, title, description et image existent déjà dans Category
-    // donc pas besoin de mapping supplémentaire
   }));
 };
 
-// Fonction de rendu pour les cartes de catégories
 const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel: string) => {
   const category = item as Category;
   console.log('Rendering category card:', category.image?.url, 'View type:', viewType);
@@ -60,7 +55,6 @@ const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel:
     );
   }
 
-  // Vue en grille
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
       {category.image && (
@@ -85,7 +79,7 @@ const renderCategoryCard = (item: CardItem, viewType: "grid" | "list", ctaLabel:
         )}
         
         <Link
-          href={`/categories/${category.uid}`}
+          href={`/categorie/${category.title}`}
           className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 group-hover:shadow-md"
         >
           {ctaLabel}

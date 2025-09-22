@@ -51,7 +51,7 @@ export default function ArticleCard({
           {...article.$?.title}
         >
           <Link 
-            href={`/blog/${article.uid}`}
+            href={`/blog-post/${article.title}`}
             className="hover:text-blue-600 transition-colors duration-200"
           >
             {article.title}
@@ -85,7 +85,7 @@ export default function ArticleCard({
                   </div>
                 )}
                 <Link 
-                  href={`/auteur/${article.author[0].uid}`}
+                  href={`/auteur/${article.author[0].title}`}
                   className="hover:text-blue-600 transition-colors duration-200"
                 >
                   {article.author[0].title}

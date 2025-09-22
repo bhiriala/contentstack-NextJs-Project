@@ -15,12 +15,11 @@ export default function Header({ header }: HeaderProps) {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-
+  console.log("header : ",header.navigation)
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          {/* Logo et titre */}
           <div className="flex items-center space-x-3">
             {header.logo && (
               <div className="relative w-16 h-13 rounded-full overflow-hidden">
@@ -42,13 +41,12 @@ export default function Header({ header }: HeaderProps) {
             </h1>
           </div>
 
-          {/* Navigation desktop */}
           <nav className="hidden md:flex">
             <ul className="flex space-x-8">
               {header.navigation?.map((item, index) => (
                 <li key={index}>
                   <Link
-                    href={item.nav_item_url}
+                    href={item.nav_item_url.href}
                     className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium"
                     {...item.$?.nav_item_title}
                   >
@@ -59,7 +57,6 @@ export default function Header({ header }: HeaderProps) {
             </ul>
           </nav>
 
-          {/* Bouton menu mobile */}
           <button
             onClick={toggleMenu}
             className="md:hidden focus:outline-none"
@@ -85,7 +82,6 @@ export default function Header({ header }: HeaderProps) {
           </button>
         </div>
 
-        {/* Menu mobile */}
         <div
           className={`md:hidden transition-all duration-300 ease-in-out overflow-hidden ${
             isMenuOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'

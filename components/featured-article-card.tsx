@@ -1,6 +1,7 @@
 import React from 'react';
 import { BlogPost } from '@/lib/types';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface FeaturedArticleCardProps {
   article: BlogPost
@@ -17,6 +18,7 @@ export default function FeaturedArticleCard({ article }: FeaturedArticleCardProp
             src={article.image.url}
             alt={article.image.title || article.title || 'Article image'}
             className="w-full h-full object-cover"
+            fill
           />
         </div>
       )}
@@ -62,17 +64,15 @@ export default function FeaturedArticleCard({ article }: FeaturedArticleCardProp
           )}
         </div>
         
-        <button
+        <Link 
+          href={`/blog-post/${article.title}`}
           className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center"
-          onClick={() => {
-            console.log('Navigating to article:', article.uid);
-          }}
         >
           Lire l article
           <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-        </button>
+        </Link>
       </div>
     </div>
   );

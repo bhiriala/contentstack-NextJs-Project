@@ -1,6 +1,7 @@
 import React from 'react';
 import { BlogPost } from '@/lib/types';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface RecentArticleCardProps {
   article: BlogPost;
@@ -23,6 +24,7 @@ export default function RecentArticleCard({
             src={article.image.url}
             alt={article.image.title || article.title || 'Article image'}
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            fill
           />
         </div>
       )}
@@ -72,18 +74,15 @@ export default function RecentArticleCard({
             </span>
           )}
         </div>
-        
-        <button
+        <Link 
+          href={`/blog-post/${article.title}`}
           className="w-full text-blue-600 hover:text-blue-800 font-medium text-sm py-2 flex items-center justify-center group transition-colors duration-200"
-          onClick={() => {
-            console.log('Navigating to article:', article.uid);
-          }}
         >
           Lire la suite
           <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-        </button>
+        </Link>
       </div>
     </div>
   );

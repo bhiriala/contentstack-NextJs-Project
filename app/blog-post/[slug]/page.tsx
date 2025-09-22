@@ -104,7 +104,6 @@ export default function Article({ params }: ArticleProps) {
   return (
     <div className={VB_EmptyBlockParentClass}>
       <div className="min-h-screen bg-gray-50">
-        {/* Header avec image */}
         <div className="relative">
           {article.image && (
             <div className="relative h-96 md:h-[500px] lg:h-[600px] overflow-hidden">
@@ -118,14 +117,12 @@ export default function Article({ params }: ArticleProps) {
             </div>
           )}
           
-          {/* Titre superposé */}
           <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 lg:p-16">
             <div className="container mx-auto">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-black mb-4 leading-tight">
                 {article.title}
               </h1>
               
-              {/* Métadonnées */}
               <div className="flex flex-wrap items-center gap-6 text-black/90">
                 {article.author && article.author[0] && (
                   <div className="flex items-center gap-2">
@@ -161,10 +158,8 @@ export default function Article({ params }: ArticleProps) {
           </div>
         </div>
 
-        {/* Contenu principal */}
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-4xl mx-auto">
-            {/* Résumé */}
             {article.summary && (
               <div className="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8 rounded-r-lg">
                 <p className="text-lg text-gray-700 font-medium italic">
@@ -182,7 +177,6 @@ export default function Article({ params }: ArticleProps) {
           </div>
         </div>
 
-        {/* Section articles similaires */}
         {similarArticles.length > 0 && (
           <div className="bg-white py-16">
             <div className="container mx-auto px-4">
