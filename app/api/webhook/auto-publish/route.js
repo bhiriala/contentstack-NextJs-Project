@@ -180,7 +180,6 @@ export async function POST(request) {
   }
 }
 
-// Handler pour les autres méthodes HTTP (optionnel, pour débugger)
 export async function GET() {
   return NextResponse.json({ 
     message: 'Webhook endpoint actif',
